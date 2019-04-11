@@ -1,2 +1,12 @@
 # ServiceDemo
-Android系统中Service的一些相关Demo，以及JobScheduler,JobIntentService,IntentService,以及最新的WorkManager
+#### Service
+> 虽然 Service 是在后台运行，但是其实还是在主线程里进行所有的操作的。Service 在启动时除非单独进行了定义否则并没有在单独的线程或者进程了而都是在主线程里。所以这表示任何能堵塞主线程的操作（例如音乐的播放或者网络请求）都应该单独开辟新的线程来进行操作，否则很容易出现 ANR 。
+> 通过在 <service> 标签里将 android:exported 设置为 false。可以防止其他的程序来启动你的 Service。
+
+两种启动模式的优缺点：
+- startService
+
+> startService方式启动Service，旦服务启动，它就会在后台无限期的运行，生命周期独立于启动它的组件，即使启动它的组件已经销毁了也不受任何影响，由于启动的服务长期运行在后台，这会大量消耗手机的电量，因此，我们应该在任务执行完成之后调用stopSelf()来停止服务，或者通过其他应用组件调用stopService 来停止服务。
+
+缺点：服务独立于启动它的组件，也就是说，当组件启动服务后，组件和服务就在也没有关系了，就算启动它的组件被销毁了，服务照样在后台运行。通过这种方式启动的服务不好与组件之间通信。
+- bindService
