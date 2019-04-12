@@ -4,12 +4,22 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.servicedemo.messenger.MessengerService;
+
+import static com.example.servicedemo.messenger.MessengerService.MESSAGE_FROM_CLIENT;
+import static com.example.servicedemo.messenger.MessengerService.MESSAGE_FROM_SERVICE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -18,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mStartButtonBind;
     Button mButtonStopBind;
     MyBinder mBinder;
+
+    private Messenger messenger;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,16 +62,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_start_bind:
-                bindService(new Intent(this,BindService.class),mConnection, Context.BIND_AUTO_CREATE);
+                //用启动采用binder
+//                bindService(new Intent(this,BindService.class),mConnection, Context.BIND_AUTO_CREATE);
+                //用启动采用Messenger
+                bindService(new Intent(this, MessengerService.class),mMessengerConnection, Context.BIND_AUTO_CREATE);
+
                 break;
 
             case R.id.btn_stop_bind:
-                unbindService(mConnection);
+//                unbindService(mConnection);
+                unbindService(mMessengerConnection);
                 break;
         }
     }
 
-
+    //使用Binder
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -77,4 +95,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mBinder = null;
         }
     };
+
+    //使用Messenger
+    private ServiceConnection mMessengerConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //1.通过服务端返回的Binder创建Messenger
+            messenger = new Messenger(service);
+            //2.构建message
+            Message message = Message.obtain(null,MESSAGE_FROM_CLIENT);
+            Bundle bundle = new Bundle();
+            bundle.putString("data","hello world");
+            message.setData(bundle);
+
+            //如果需要回传，则需要这个，replyTo字段用于传输Messager对象，以便进程间相互通信
+            message.replyTo = mClientMessenger;
+
+
+            //3.向服务端发送数据
+            try {
+                messenger.send(message);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.e("szx", "onServiceDisconnected-->binder died");
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private Messenger mClientMessenger = new Messenger(new MessengerHandler());
+
+
+
+    //用于构建客户端的Messenger对象，并处理服务端的消息
+    private static class MessengerHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case MESSAGE_FROM_SERVICE:
+                    Log.e("szx",msg.getData().getString("msg"));
+                    break;
+
+
+                    default:
+                        super.handleMessage(msg);
+
+                        break;
+            }
+        }
+    }
 }

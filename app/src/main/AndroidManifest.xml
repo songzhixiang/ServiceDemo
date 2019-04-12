@@ -22,6 +22,12 @@
         <service
             android:exported="false"
             android:name=".BindService"/>
+        <service
+
+            android:name=".messenger.MessengerService"
+            android:process=":remote"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
