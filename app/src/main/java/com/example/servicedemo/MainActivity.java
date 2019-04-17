@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mButtonStopBind;
     MyBinder mBinder;
 
-    private Messenger messenger;
-
+    private Messenger mService;
+    private Messenger mClientMessenger = new Messenger(new MessengerHandler());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +44,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mStartButtonBind.setOnClickListener(this);
         mButtonStopBind.setOnClickListener(this);
 
+    }
+
+    //用于构建客户端的Messenger对象，并处理服务端的消息
+    private static class MessengerHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case MESSAGE_FROM_SERVICE:
+                    Log.e("szx",msg.getData().getString("msg"));
+                    break;
+
+
+                default:
+                    super.handleMessage(msg);
+
+                    break;
+            }
+        }
     }
 
     @Override
@@ -65,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //用启动采用binder
 //                bindService(new Intent(this,BindService.class),mConnection, Context.BIND_AUTO_CREATE);
                 //用启动采用Messenger
-                bindService(new Intent(this, MessengerService.class),mMessengerConnection, Context.BIND_AUTO_CREATE);
+                //绑定服务
+                bindService(new Intent(this, MessengerService.class), mMessengerConnection, Context.BIND_AUTO_CREATE);
+
 
                 break;
 
@@ -100,8 +120,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ServiceConnection mMessengerConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+
+            Log.e("szx", "ServiceConnection-->" + System.currentTimeMillis());
+
             //1.通过服务端返回的Binder创建Messenger
-            messenger = new Messenger(service);
+            mService = new Messenger(service);
             //2.构建message
             Message message = Message.obtain(null,MESSAGE_FROM_CLIENT);
             Bundle bundle = new Bundle();
@@ -114,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //3.向服务端发送数据
             try {
-                messenger.send(message);
+                mService.send(message);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -138,25 +161,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    private Messenger mClientMessenger = new Messenger(new MessengerHandler());
 
 
 
-    //用于构建客户端的Messenger对象，并处理服务端的消息
-    private static class MessengerHandler extends Handler{
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case MESSAGE_FROM_SERVICE:
-                    Log.e("szx",msg.getData().getString("msg"));
-                    break;
 
 
-                    default:
-                        super.handleMessage(msg);
-
-                        break;
-            }
-        }
-    }
 }

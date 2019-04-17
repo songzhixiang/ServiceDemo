@@ -18,8 +18,8 @@ import android.util.Log;
  */
 public class MessengerService extends Service {
 
-    public static final int MESSAGE_FROM_CLIENT = 100;
-    public static final int MESSAGE_FROM_SERVICE = 101;
+    public static final int MESSAGE_FROM_CLIENT = 11;
+    public static final int MESSAGE_FROM_SERVICE = 22;
 
     //2.构建Messenger对象
     private final Messenger messenger = new Messenger(new MessengerHandler());
@@ -35,28 +35,30 @@ public class MessengerService extends Service {
     //1.建立Handler，用于处理来自客户端的消息
     public static class MessengerHandler extends Handler{
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(Message message) {
 
-            switch (msg.what){
+            switch (message.what){
                 case MESSAGE_FROM_CLIENT:
-                    Log.e("szx",msg.getData().getString("data"));
-                    //获取客户端传递过来的消息，通过这个Messenger回传消息给客户端
-                    Messenger clinet = msg.replyTo;
-                    //回传数据当然还是需要用到Message
-                    Message message = Message.obtain(null,MESSAGE_FROM_SERVICE);
+
+                    Log.e("szx",message.getData().getString("data"));
+                    //获取客户端传递过来的Messenger，通过这个Messenger回传消息给客户端
+                    Messenger client = message.replyTo;
+                    //当然，回传消息还是要通过message
+                    Message msg = Message.obtain(null, MESSAGE_FROM_SERVICE);
                     Bundle bundle = new Bundle();
-                    bundle.putString("msg","hello clinet");
-                    message.setData(bundle);
+                    bundle.putString("msg", "hello client, I have received your message!");
+                    msg.setData(bundle);
                     try {
-                        clinet.send(msg);
+                        client.send(msg);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
 
 
+
                     break;
                 default:
-                    super.handleMessage(msg);
+                    super.handleMessage(message);
                     break;
             }
         }
