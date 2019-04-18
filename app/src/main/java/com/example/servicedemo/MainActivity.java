@@ -1,14 +1,18 @@
 package com.example.servicedemo;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +20,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.servicedemo.jobscheduler.DemoJobService;
 import com.example.servicedemo.messenger.MessengerService;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.example.servicedemo.messenger.MessengerService.MESSAGE_FROM_CLIENT;
 import static com.example.servicedemo.messenger.MessengerService.MESSAGE_FROM_SERVICE;
@@ -27,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mButtonStop;
     Button mStartButtonBind;
     Button mButtonStopBind;
+    Button mButtonJob;
+    Button mButtonJobStop;
     MyBinder mBinder;
 
     private Messenger mService;
@@ -39,10 +49,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButtonStop = findViewById(R.id.btn_stop);
         mStartButtonBind = findViewById(R.id.btn_start_bind);
         mButtonStopBind = findViewById(R.id.btn_stop_bind);
+        mButtonJob = findViewById(R.id.btn_start_jobservice);
+        mButtonJobStop = findViewById(R.id.btn_stop_jobservice);
         mStartButton.setOnClickListener(this);
         mButtonStop.setOnClickListener(this);
         mStartButtonBind.setOnClickListener(this);
         mButtonStopBind.setOnClickListener(this);
+        mButtonJob.setOnClickListener(this);
+        mButtonJobStop.setOnClickListener(this);
 
     }
 
@@ -64,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(this,MyService.class);
@@ -92,6 +107,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_stop_bind:
 //                unbindService(mConnection);
                 unbindService(mMessengerConnection);
+                break;
+
+            case R.id.btn_start_jobservice:
+                scheduleJob();
+                break;
+
+            case R.id.btn_stop_jobservice:
+                JobScheduler js  = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                js.cancelAll();
                 break;
         }
     }
@@ -148,6 +172,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("szx", "onServiceDisconnected-->binder died");
         }
     };
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // jobscheduler
+    ///////////////////////////////////////////////////////////////////////////
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void scheduleJob(){
+        JobInfo.Builder builder = new JobInfo.Builder(0,new ComponentName(this, DemoJobService.class));
+        builder.setRequiresCharging(true);//是否要求充电的时候执行
+        builder.setMinimumLatency(5000);//设置至少多少毫秒后执行
+        builder.setOverrideDeadline(30000);//设置最多延迟多少毫秒之后执行
+        JobInfo jobInfo = builder.build();
+        JobScheduler js  = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (js!=null){
+            js.schedule(jobInfo);
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String timestamp = format.format(date);
+
+        Log.e("szx","begin:"+timestamp);
+    }
 
 
 
