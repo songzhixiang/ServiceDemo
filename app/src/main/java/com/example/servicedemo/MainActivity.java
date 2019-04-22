@@ -12,9 +12,12 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.os.ResultReceiver;
 import android.support.annotation.RequiresApi;
+import android.support.v4.text.PrecomputedTextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,9 +25,11 @@ import android.widget.Toast;
 
 import com.example.servicedemo.jobscheduler.DemoJobService;
 import com.example.servicedemo.messenger.MessengerService;
+import com.example.servicedemo.resultreceiver.MyIntentService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Future;
 
 import static com.example.servicedemo.messenger.MessengerService.MESSAGE_FROM_CLIENT;
 import static com.example.servicedemo.messenger.MessengerService.MESSAGE_FROM_SERVICE;
@@ -37,26 +42,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mButtonStopBind;
     Button mButtonJob;
     Button mButtonJobStop;
+    Button mButtonIntentService;
     MyBinder mBinder;
-
+    AppCompatTextView mAppCompatTextView;
     private Messenger mService;
     private Messenger mClientMessenger = new Messenger(new MessengerHandler());
+
+
+    private Handler mHandler;
+    private ResultReceiver mResultReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mHandler = new Handler();
+        mResultReceiver = new ResultReceiver(mHandler){
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                Toast.makeText(MainActivity.this, "receive " + resultCode, Toast.LENGTH_LONG).show();
+
+            }
+        };
+
         mStartButton = findViewById(R.id.btn_start);
         mButtonStop = findViewById(R.id.btn_stop);
         mStartButtonBind = findViewById(R.id.btn_start_bind);
         mButtonStopBind = findViewById(R.id.btn_stop_bind);
         mButtonJob = findViewById(R.id.btn_start_jobservice);
         mButtonJobStop = findViewById(R.id.btn_stop_jobservice);
+        mButtonIntentService = findViewById(R.id.btn_intentservice_resultreceiver);
+        mAppCompatTextView = findViewById(R.id.tv_content);
+        Future<PrecomputedTextCompat> future = PrecomputedTextCompat
+                .getTextFuture("HelloWorld", mAppCompatTextView.getTextMetricsParamsCompat(), null);
+
+        mAppCompatTextView.setTextFuture(future);
+
         mStartButton.setOnClickListener(this);
         mButtonStop.setOnClickListener(this);
         mStartButtonBind.setOnClickListener(this);
         mButtonStopBind.setOnClickListener(this);
         mButtonJob.setOnClickListener(this);
         mButtonJobStop.setOnClickListener(this);
+        mButtonIntentService.setOnClickListener(this);
 
     }
 
@@ -116,6 +145,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_stop_jobservice:
                 JobScheduler js  = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
                 js.cancelAll();
+                break;
+
+            case R.id.btn_intentservice_resultreceiver:
+                Intent i = new Intent(MainActivity.this, MyIntentService.class);
+                i.putExtra("result_receiver",mResultReceiver);
+                startService(i);
                 break;
         }
     }

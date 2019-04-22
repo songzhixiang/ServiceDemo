@@ -24,6 +24,13 @@ public class DemoJobService extends JobService {
         Log.e("szx","onStartJob"+timestamp);
         //告诉系统已经执行完毕
 //        jobFinished(params,false);
+
+        //如果return false 代表 任务已经全部做完了，系统此时会解绑JobService，最终调用onDestroy方法，效果和jobFinished一样
+        //如果return true 代表 任务已经启动成功，但是还没有全部做完，我们可以自行调用jobFinished
+
+
+
+
         return true;
     }
 
@@ -33,6 +40,14 @@ public class DemoJobService extends JobService {
         Date date = new Date(System.currentTimeMillis());
         String timestamp = format.format(date);
         Log.e("szx","onStopJob"+timestamp);
+        //返回true 表示任务计划在下次继续
+        //返回false 表示终止以后不在继续
         return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("szx","onDestroy");
     }
 }
