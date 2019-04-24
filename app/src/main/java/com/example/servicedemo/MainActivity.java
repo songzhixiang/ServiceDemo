@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.servicedemo.job.DemoSyncJob;
 import com.example.servicedemo.jobscheduler.DemoJobService;
 import com.example.servicedemo.messenger.MessengerService;
 import com.example.servicedemo.resultreceiver.MyIntentService;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mButtonJob;
     Button mButtonJobStop;
     Button mButtonIntentService;
+    Button mButtonAndroidJob;
     MyBinder mBinder;
     AppCompatTextView mAppCompatTextView;
     private Messenger mService;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mStartButtonBind = findViewById(R.id.btn_start_bind);
         mButtonStopBind = findViewById(R.id.btn_stop_bind);
         mButtonJob = findViewById(R.id.btn_start_jobservice);
+        mButtonAndroidJob = findViewById(R.id.btn_android_job);
         mButtonJobStop = findViewById(R.id.btn_stop_jobservice);
         mButtonIntentService = findViewById(R.id.btn_intentservice_resultreceiver);
         mAppCompatTextView = findViewById(R.id.tv_content);
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButtonJob.setOnClickListener(this);
         mButtonJobStop.setOnClickListener(this);
         mButtonIntentService.setOnClickListener(this);
+        mButtonAndroidJob.setOnClickListener(this);
 
     }
 
@@ -152,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 i.putExtra("result_receiver",mResultReceiver);
                 startService(i);
                 break;
+            case R.id.btn_android_job:
+                DemoSyncJob.scheduleJob();
+                break;
         }
     }
 
@@ -215,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void scheduleJob(){
         JobInfo.Builder builder = new JobInfo.Builder(0,new ComponentName(this, DemoJobService.class));
+        builder.setBackoffCriteria(1000,JobInfo.BACKOFF_POLICY_LINEAR);//重试机制
         builder.setRequiresCharging(true);//是否要求充电的时候执行
         builder.setMinimumLatency(5000);//设置至少多少毫秒后执行
         builder.setOverrideDeadline(30000);//设置最多延迟多少毫秒之后执行

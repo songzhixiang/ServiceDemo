@@ -47,7 +47,11 @@
         android:id="@+id/btn_intentservice_resultreceiver"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+    <Button
+        android:text="启动AndroidJob"
+        android:id="@+id/btn_android_job"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
