@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -21,8 +22,13 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.example.servicedemo.glide.Glide;
+
+import com.example.servicedemo.glide.RequestListener;
 import com.example.servicedemo.job.DemoSyncJob;
 import com.example.servicedemo.jobscheduler.DemoJobService;
 import com.example.servicedemo.messenger.MessengerService;
@@ -45,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mButtonJobStop;
     Button mButtonIntentService;
     Button mButtonAndroidJob;
+    Button mButtonStartImage;
+    ImageView mImageView;
     MyBinder mBinder;
     AppCompatTextView mAppCompatTextView;
     private Messenger mService;
@@ -77,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButtonJobStop = findViewById(R.id.btn_stop_jobservice);
         mButtonIntentService = findViewById(R.id.btn_intentservice_resultreceiver);
         mAppCompatTextView = findViewById(R.id.tv_content);
+        mButtonStartImage = findViewById(R.id.btn_loadImage);
+        mImageView = findViewById(R.id.iv);
         Future<PrecomputedTextCompat> future = PrecomputedTextCompat
                 .getTextFuture("HelloWorld", mAppCompatTextView.getTextMetricsParamsCompat(), null);
 
@@ -90,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButtonJobStop.setOnClickListener(this);
         mButtonIntentService.setOnClickListener(this);
         mButtonAndroidJob.setOnClickListener(this);
+        mButtonStartImage.setOnClickListener(this);
 
     }
 
@@ -158,6 +169,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_android_job:
                 DemoSyncJob.scheduleJob();
+                break;
+
+            case R.id.btn_loadImage:
+                Glide.with(this).
+                        load("https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3230577747,3091740460&fm=26&gp=0.jpg")
+                        .loading(R.mipmap.ic_launcher).listenter(new RequestListener() {
+                    @Override
+                    public boolean onSuccess(Bitmap bitmap) {
+                        LogUtils.e("加载完成");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onFail() {
+                        return false;
+                    }
+                }).into(mImageView);
+
                 break;
         }
     }
