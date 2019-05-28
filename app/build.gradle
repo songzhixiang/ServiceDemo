@@ -8,13 +8,37 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        //开启分包
+
+        multiDexEnabled true
+
+        multiDexKeepFile file('multidex-config.txt')
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    dexOptions{
+        javaMaxHeapSize "4g"
+        preDexLibraries = false
+        additionalParameters = [
+                //配置Multidex参数
+                        '--multi-dex',//多dex分包
+                        '--set-max-idx-number=50000',//每个包方法数上限
+                        '--main-dex-list='+'/multidex-config.txt',//打包到主class.dex的文件列表
+                        '--minimal-main-dex'
+        ]
     }
 }
 
@@ -26,8 +50,12 @@ dependencies {
     implementation 'com.evernote:android-job:1.2.6'
 
     implementation 'com.blankj:utilcode:1.23.7'
+    implementation 'com.jakewharton:disklrucache:2.0.2'
+
+    implementation 'com.android.support:multidex:1.0.3'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation project(path: ':lib')
 }

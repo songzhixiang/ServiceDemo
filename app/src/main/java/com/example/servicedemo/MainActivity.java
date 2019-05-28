@@ -1,5 +1,6 @@
 package com.example.servicedemo;
 
+import android.Manifest;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.PermissionUtils;
 import com.example.servicedemo.glide.Glide;
 
 import com.example.servicedemo.glide.RequestListener;
@@ -33,6 +35,7 @@ import com.example.servicedemo.job.DemoSyncJob;
 import com.example.servicedemo.jobscheduler.DemoJobService;
 import com.example.servicedemo.messenger.MessengerService;
 import com.example.servicedemo.resultreceiver.MyIntentService;
+import com.example.servicedemo.tinker.BugActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mButtonIntentService;
     Button mButtonAndroidJob;
     Button mButtonStartImage;
+    Button mButtonStartTreeView;
     ImageView mImageView;
     MyBinder mBinder;
     AppCompatTextView mAppCompatTextView;
@@ -86,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButtonIntentService = findViewById(R.id.btn_intentservice_resultreceiver);
         mAppCompatTextView = findViewById(R.id.tv_content);
         mButtonStartImage = findViewById(R.id.btn_loadImage);
+        mButtonStartTreeView = findViewById(R.id.btn_start_treeview);
         mImageView = findViewById(R.id.iv);
         Future<PrecomputedTextCompat> future = PrecomputedTextCompat
                 .getTextFuture("HelloWorld", mAppCompatTextView.getTextMetricsParamsCompat(), null);
@@ -101,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButtonIntentService.setOnClickListener(this);
         mButtonAndroidJob.setOnClickListener(this);
         mButtonStartImage.setOnClickListener(this);
+        mButtonStartTreeView.setOnClickListener(this);
+
+        PermissionUtils.permission().request();
 
     }
 
@@ -187,6 +195,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }).into(mImageView);
 
+                break;
+            case R.id.btn_start_treeview:
+//                TreeViewActivity.start(this);
+                BugActivity.start(this);
                 break;
         }
     }

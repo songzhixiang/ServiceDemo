@@ -1,11 +1,15 @@
 package com.example.servicedemo.glide;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.FileObserver;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
+
+import com.example.servicedemo.App;
+import com.example.servicedemo.glide.cache.DoubleLruCache;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,6 +29,8 @@ public class BitmapDispatcher extends Thread {
     private static Handler mHandler = new Handler(Looper.myLooper());
 
     private LinkedBlockingDeque<BitmapRequest> mBitmapRequests;
+
+    private DoubleLruCache mDoubleLruCache = new DoubleLruCache(App.getINSTANCE());
 
     public BitmapDispatcher(LinkedBlockingDeque<BitmapRequest> bitmapRequests) {
         mBitmapRequests = bitmapRequests;
@@ -69,8 +75,15 @@ public class BitmapDispatcher extends Thread {
     }
 
     private Bitmap findBitMap(BitmapRequest bitmapRequest) {
+        Bitmap bitmap = mDoubleLruCache.get(bitmapRequest);
+        if (bitmap == null){
+            bitmap = downloadImageView(bitmapRequest.getUrl());
+            if (bitmap != null){
+                mDoubleLruCache.put(bitmapRequest,bitmap);
+            }
 
-        return downloadImageView(bitmapRequest.getUrl());
+        }
+        return bitmap;
 
     }
 

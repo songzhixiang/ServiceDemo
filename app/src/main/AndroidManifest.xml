@@ -21,6 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".TreeViewActivity" />
+        <activity android:name=".tinker.BugActivity" />
+
         <service
             android:exported="false"
             android:name=".MyService"/>

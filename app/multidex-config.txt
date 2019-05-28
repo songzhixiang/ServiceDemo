@@ -1,0 +1,2 @@
+com/example/servicedemo/App.class
+com/example/servicedemo/MainActivity.class
