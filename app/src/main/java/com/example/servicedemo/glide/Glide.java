@@ -1,6 +1,20 @@
 package com.example.servicedemo.glide;
 
-import android.content.Context;
+
+
+
+
+
+
+
+
+
+
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
+import com.example.servicedemo.glide.lifecycle.RequestManagerFragment;
 
 /**
  * @author andysong
@@ -9,7 +23,14 @@ import android.content.Context;
  */
 public class Glide {
 
-    public static BitmapRequest with(Context mContext){
+    public static BitmapRequest with(AppCompatActivity mContext){
+        FragmentManager fragmentManager = mContext.getSupportFragmentManager();
+        RequestManagerFragment current = (RequestManagerFragment) fragmentManager.findFragmentByTag("glide");
+        if (current == null){
+            current =  new RequestManagerFragment();
+            fragmentManager.beginTransaction().add(current,"glide").commitAllowingStateLoss();
+        }
+
         return new BitmapRequest(mContext);
     }
 }

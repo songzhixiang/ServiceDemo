@@ -15,16 +15,19 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.ResultReceiver;
-import android.support.annotation.RequiresApi;
-import android.support.v4.text.PrecomputedTextCompat;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatTextView;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.text.PrecomputedTextCompat;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PermissionUtils;
@@ -34,6 +37,7 @@ import com.example.servicedemo.glide.RequestListener;
 import com.example.servicedemo.job.DemoSyncJob;
 import com.example.servicedemo.jobscheduler.DemoJobService;
 import com.example.servicedemo.messenger.MessengerService;
+import com.example.servicedemo.plugin.PluginActivity;
 import com.example.servicedemo.resultreceiver.MyIntentService;
 import com.example.servicedemo.tinker.BugActivity;
 
@@ -198,7 +202,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_start_treeview:
 //                TreeViewActivity.start(this);
-                BugActivity.start(this);
+//                BugActivity.start(this);
+                PluginActivity.start(this);
                 break;
         }
     }

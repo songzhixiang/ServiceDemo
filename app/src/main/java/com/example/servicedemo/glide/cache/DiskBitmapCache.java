@@ -134,4 +134,9 @@ public class DiskBitmapCache implements BitmapCache {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void remove(int activity) {
+
+    }
 }

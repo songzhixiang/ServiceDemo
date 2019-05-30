@@ -3,8 +3,10 @@ package com.example.servicedemo.jobscheduler;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

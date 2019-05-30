@@ -30,7 +30,7 @@ public class BitmapDispatcher extends Thread {
 
     private LinkedBlockingDeque<BitmapRequest> mBitmapRequests;
 
-    private DoubleLruCache mDoubleLruCache = new DoubleLruCache(App.getINSTANCE());
+    private DoubleLruCache mDoubleLruCache = DoubleLruCache.getInstance();
 
     public BitmapDispatcher(LinkedBlockingDeque<BitmapRequest> bitmapRequests) {
         mBitmapRequests = bitmapRequests;

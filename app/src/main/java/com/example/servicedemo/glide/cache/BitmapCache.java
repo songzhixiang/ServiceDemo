@@ -19,4 +19,7 @@ public interface BitmapCache {
 
     //清除缓存
     void remove(BitmapRequest bitmapRequest);
+
+
+    void remove(int activity);
 }

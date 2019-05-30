@@ -1,10 +1,11 @@
 package com.example.servicedemo;
 
-import android.app.Application;
+
 import android.content.Context;
-import android.os.StrictMode;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
+
+
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
 
 import com.evernote.android.job.JobManager;
 import com.example.lib.FixDexUtils;
