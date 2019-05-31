@@ -12,7 +12,7 @@ import com.blankj.utilcode.util.ToastUtils;
 public class ParamsSort {
     public void math(Context mContext){
         int a = 10;
-        int b = 1;
+        int b = 5;
         ToastUtils.showShort(a/b);
     }
 }

@@ -11,13 +11,8 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.PathUtils;
-import com.blankj.utilcode.util.ResourceUtils;
-
 import com.example.lib.plugin.PluginManager;
 import com.example.lib.plugin.ProxyActivity;
-import com.example.lib.utils.Constants;
 import com.example.servicedemo.R;
 
 import java.io.File;
@@ -31,7 +26,7 @@ import butterknife.OnClick;
  * @data 2019-05-30
  * @discription xxx
  */
-public class PluginActivity extends AppCompatActivity {
+public class MyPluginActivity extends AppCompatActivity {
 
     @BindView(R.id.btn_load_apk)
     Button btnLoadApk;
@@ -42,15 +37,16 @@ public class PluginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plugin);
-        PluginManager.getInstance().init(this);
+
         ButterKnife.bind(this);
+        PluginManager.getInstance().init(this);
     }
 
     @OnClick({R.id.btn_load_apk, R.id.btn_go_to})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_load_apk:
-                File sourceFile = new File(Environment.getExternalStorageDirectory(),"ug.apk");
+                File sourceFile = new File(Environment.getExternalStorageDirectory(),"my.apk");
                 String apkPath =sourceFile.getAbsolutePath();
                 PluginManager.getInstance().loadApk(apkPath);
                 break;
@@ -63,7 +59,7 @@ public class PluginActivity extends AppCompatActivity {
     }
 
     public static void start(Context context) {
-        Intent starter = new Intent(context, PluginActivity.class);
+        Intent starter = new Intent(context, MyPluginActivity.class);
         context.startActivity(starter);
     }
 }

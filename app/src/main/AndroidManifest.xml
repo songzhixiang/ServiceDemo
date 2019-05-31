@@ -27,8 +27,8 @@
         <activity android:name=".TreeViewActivity" />
         <activity android:name=".tinker.BugActivity" />
         <activity android:name="com.example.lib.plugin.ProxyActivity"/>
-        <activity android:name="com.example.lib.plugin.PluginActivity"/>
-        <activity android:name=".plugin.PluginActivity" />
+        <activity android:name=".plugin.MyPluginActivity" />
+
 
         <service
             android:exported="false"

@@ -1,6 +1,5 @@
 package com.example.servicedemo;
 
-import android.Manifest;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -37,7 +36,7 @@ import com.example.servicedemo.glide.RequestListener;
 import com.example.servicedemo.job.DemoSyncJob;
 import com.example.servicedemo.jobscheduler.DemoJobService;
 import com.example.servicedemo.messenger.MessengerService;
-import com.example.servicedemo.plugin.PluginActivity;
+import com.example.servicedemo.plugin.MyPluginActivity;
 import com.example.servicedemo.resultreceiver.MyIntentService;
 import com.example.servicedemo.tinker.BugActivity;
 
@@ -202,8 +201,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_start_treeview:
 //                TreeViewActivity.start(this);
-//                BugActivity.start(this);
-                PluginActivity.start(this);
+                BugActivity.start(this);
+//                MyPluginActivity.start(this);
                 break;
         }
     }

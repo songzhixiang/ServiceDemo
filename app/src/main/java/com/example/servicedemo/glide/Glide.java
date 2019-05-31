@@ -1,16 +1,5 @@
 package com.example.servicedemo.glide;
 
-
-
-
-
-
-
-
-
-
-
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
