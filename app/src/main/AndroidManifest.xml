@@ -28,6 +28,8 @@
         <activity android:name=".tinker.BugActivity" />
         <activity android:name="com.example.lib.plugin.ProxyActivity"/>
         <activity android:name=".plugin.MyPluginActivity" />
+        <activity android:name=".function.SecondActivity" />
+        <activity android:name=".function.FirstActivity" />
 
 
         <service

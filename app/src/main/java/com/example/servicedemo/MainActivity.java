@@ -30,6 +30,7 @@ import androidx.core.text.PrecomputedTextCompat;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.PermissionUtils;
+import com.example.servicedemo.function.FirstActivity;
 import com.example.servicedemo.glide.Glide;
 
 import com.example.servicedemo.glide.RequestListener;
@@ -201,8 +202,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_start_treeview:
 //                TreeViewActivity.start(this);
-                BugActivity.start(this);
+//                BugActivity.start(this);
 //                MyPluginActivity.start(this);
+                FirstActivity.start(this);
                 break;
         }
     }
