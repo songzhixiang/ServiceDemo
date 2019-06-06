@@ -24,6 +24,9 @@ android {
 //            abiFilters('armeabi','armeabi-v7a')
 //        }
 
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+
     }
     buildTypes {
 
@@ -90,4 +93,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:3.14.2")
 
     api project(path: ':lib')
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
